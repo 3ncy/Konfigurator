@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +12,9 @@ public class Konfigurator : MonoBehaviour
     {
         public Sprite Icon;
         public GameObject Model;
+#nullable enable
         public Material? ColorMaterial;
+#nullable disable
     }
 
 
@@ -21,18 +24,20 @@ public class Konfigurator : MonoBehaviour
     [SerializeField] GameObject carBody;
     //[SerializeField] GameObject[] wheelObjets;
     [SerializeField] Transform[] wheelPositions;
+    [SerializeField] VerticalLayoutGroup wheelsPanel;
     int _wheelIndex;
 
     [SerializeField] GameObject modButtonPrefab;
 
     [SerializeField] HorizontalLayoutGroup colorsPanel;
+    [SerializeField] Sprite colorIcon;
 
     [SerializeField] Mod[] wheels;
     [SerializeField] Mod[] spoilers;
     [SerializeField] Transform spoilerHolder;
     [SerializeField] VerticalLayoutGroup spoilersPanel;
-   
-    int selectedSpoilerIndex;
+
+    private int selectedSpoilerIndex; //compiller haze chybu, ale actually se do toho assignuje
 
 
     // Start is called before the first frame update
@@ -46,10 +51,11 @@ public class Konfigurator : MonoBehaviour
             GameObject button = Instantiate(modButtonPrefab);
             button.GetComponent<RectTransform>().sizeDelta = new Vector2(50, 62);
             button.transform.SetParent(colorsPanel.transform, false);
+            button.GetComponent<Image>().sprite = colorIcon;
             button.GetComponent<Image>().color = color;
             button.GetComponent<Button>().onClick.AddListener(() =>
             {
-                ChangeColor(color);
+                ChangeColor(color, true);
             });
         }
 
@@ -65,23 +71,26 @@ public class Konfigurator : MonoBehaviour
             });
         }
 
-        //todo: nastavit vsem modum a autu stejnou barvu 
+        foreach (Mod wheel in wheels)
+        {
+            GameObject button = Instantiate(modButtonPrefab);
+            button.GetComponent<RectTransform>().sizeDelta = new Vector2(62, 50);
+            button.GetComponent<Image>().sprite = wheel.Icon;
+            button.transform.SetParent(wheelsPanel.transform, false);
+            button.GetComponent<Button>().onClick.AddListener(() =>
+            {
+                ChangeWheels(System.Array.IndexOf(wheels, wheel)); //ehhhh
+            });
+        }
 
-        currentColor = bodyColors.FirstOrDefault();
+
+        currentColor = carMaterial.color;
     }
 
     // Update is called once per frame
     void Update()
     {
 
-        //tohle se obv presune do UI
-
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            _wheelIndex = (_wheelIndex == wheelPositions[0].childCount - 1) ? 0 : _wheelIndex + 1;
-
-            ChangeWheels(_wheelIndex);
-        }
     }
 
     public void ChangeSpoiler(int spoilerIndex)
@@ -94,7 +103,7 @@ public class Konfigurator : MonoBehaviour
         }
         selectedSpoilerIndex = spoilerIndex;           //tohle by moglo jit predelat v souvislosti s komentarem ?
         spoilers[spoilerIndex].Model.SetActive(true);
-        ChangeColor(currentColor);
+        ChangeColor(currentColor, false);
     }
 
     public void ChangeWheels(int wheelIndex) //mozna ne pres index? (-_-)?  //a tohle je prej "scratching head" emoticon
@@ -112,11 +121,20 @@ public class Konfigurator : MonoBehaviour
         }
     }
 
-    public void ChangeColor(Color c)
+    public void ChangeColor(Color c, bool blendMods)
     {
-        carMaterial.color = c;
-        if (spoilers[selectedSpoilerIndex].ColorMaterial != null) spoilers[selectedSpoilerIndex].ColorMaterial.color = c;
+        //carMaterial.color = c;
+        carMaterial.DOColor(c, 1);
+        //if (spoilers[selectedSpoilerIndex].ColorMaterial != null) spoilers[selectedSpoilerIndex].ColorMaterial.color = c;
+        if (spoilers[selectedSpoilerIndex].ColorMaterial is not null)
+        {
+            if (blendMods)
+                spoilers[selectedSpoilerIndex].ColorMaterial.DOColor(c, 1);
+            else
+                spoilers[selectedSpoilerIndex].ColorMaterial.color = c;
+
+        }
+
         currentColor = c;
-        Debug.Log($"current color {c}");
     }
 }

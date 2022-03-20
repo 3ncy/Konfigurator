@@ -31,33 +31,19 @@ public class CameraController : MonoBehaviour
             transform.DORotateQuaternion(cameraSpots.GetChild(selectedSpot).rotation, 1.5f);
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            transform.LookAt(car);
-        }
-
-
         if (Input.GetMouseButton(0))
         {
             transform.RotateAround(car.transform.position, Vector3.up, Input.GetAxis("Mouse X") * Time.deltaTime * speedX);
 
-            //transform.RotateAround(car.transform.position, Vector3.MoveTowards(transform.right, car.transform.position, 20), Input.GetAxis("Mouse Y") * Time.deltaTime * speedY);
 
-
+            
             a.transform.right = transform.right;
+
             float moveDegrees = -Input.GetAxis("Mouse Y") * Time.deltaTime * speedY;
-
             float cameraAngle = Quaternion.Angle(transform.rotation, a.transform.rotation);
-            Debug.Log(cameraAngle > 1 && cameraAngle < 89);
 
-            //transform.RotateAround(car.transform.position, a.transform.right, (transform.localRotation.eulerAngles.x > 0 && transform.localRotation.eulerAngles.x < 90) ? degrees : 0);
-            //transform.RotateAround(car.transform.position, a.transform.right, degrees);
-            transform.RotateAround(car.transform.position, a.transform.right, (cameraAngle + moveDegrees > 1 && cameraAngle + moveDegrees < 89) ? moveDegrees : 0);
-
-
-
-
-
+            transform.RotateAround(car.transform.position, transform.right,
+                (cameraAngle + moveDegrees > 1 && cameraAngle + moveDegrees < 89) ? moveDegrees : 0);
         }
     }
 }

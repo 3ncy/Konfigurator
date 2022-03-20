@@ -7,8 +7,7 @@ using UnityEngine.UI;
 
 public class Konfigurator : MonoBehaviour
 {
-    [System.Serializable]
-    public struct Mod
+    [System.Serializable] public struct Mod
     {
         public Sprite Icon;
         public GameObject Model;
@@ -22,7 +21,6 @@ public class Konfigurator : MonoBehaviour
     [SerializeField] Color[] bodyColors;
     Color currentColor;
     [SerializeField] GameObject carBody;
-    //[SerializeField] GameObject[] wheelObjets;
     [SerializeField] Transform[] wheelPositions;
     [SerializeField] VerticalLayoutGroup wheelsPanel;
     int _wheelIndex;
@@ -85,12 +83,6 @@ public class Konfigurator : MonoBehaviour
 
 
         currentColor = carMaterial.color;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     public void ChangeSpoiler(int spoilerIndex)

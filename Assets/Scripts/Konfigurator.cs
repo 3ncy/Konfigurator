@@ -7,7 +7,8 @@ using UnityEngine.UI;
 
 public class Konfigurator : MonoBehaviour
 {
-    [System.Serializable] public struct Mod
+    [System.Serializable]
+    public struct Mod
     {
         public Sprite Icon;
         public GameObject Model;
@@ -16,6 +17,15 @@ public class Konfigurator : MonoBehaviour
 #nullable disable
     }
 
+    public struct color //todo: ::::
+    {
+        public string Name;
+        public Color Color;
+    }
+
+    public struct Wheel { }
+
+    [SerializeField] CameraController cameraController;
 
     [SerializeField] Material carMaterial;
     [SerializeField] Color[] bodyColors;
@@ -23,7 +33,7 @@ public class Konfigurator : MonoBehaviour
     [SerializeField] GameObject carBody;
     [SerializeField] Transform[] wheelPositions;
     [SerializeField] VerticalLayoutGroup wheelsPanel;
-    int _wheelIndex;
+    //int _wheelIndex;
 
     [SerializeField] GameObject modButtonPrefab;
 
@@ -35,7 +45,7 @@ public class Konfigurator : MonoBehaviour
     [SerializeField] Transform spoilerHolder;
     [SerializeField] VerticalLayoutGroup spoilersPanel;
 
-    private int selectedSpoilerIndex; //compiller haze chybu, ale actually se do toho assignuje
+    private int selectedSpoilerIndex;
 
 
     // Start is called before the first frame update
@@ -87,6 +97,8 @@ public class Konfigurator : MonoBehaviour
 
     public void ChangeSpoiler(int spoilerIndex)
     {
+        cameraController.FocusSpoiler();
+
         foreach (Transform t in spoilerHolder) //asi neni idealni, ale na pokud bude potreba optimalizace, tak to nejak pujde. Pokud presunu UI 
                                                //do samostatne classtky, tak si tu musu necht promennou lastSpoiler a podle te to budu vypinat.
                                                //tohle je asi hlavne rychlej prototyp
@@ -102,6 +114,8 @@ public class Konfigurator : MonoBehaviour
                                              // ted me napadlo ze v souvislosti s dynamickym ui, tak bych mohl mit list prefabu a pri startu aplikcae
                                              // pridat ty prefaby kolum (a mby si na ne keepovat referenci??)
     {
+        cameraController.FocusWheel();
+
         foreach (Transform wheelHolder in wheelPositions)
         {
             foreach (Transform wheel in wheelHolder)
@@ -113,13 +127,17 @@ public class Konfigurator : MonoBehaviour
         }
     }
 
-    public void ChangeColor(Color c, bool blendMods)
+    public void ChangeColor(Color c, bool blendMods) //todo: pridat barvam jmena
     {
         //carMaterial.color = c;
         carMaterial.DOColor(c, 1);
-        //if (spoilers[selectedSpoilerIndex].ColorMaterial != null) spoilers[selectedSpoilerIndex].ColorMaterial.color = c;
-        if (spoilers[selectedSpoilerIndex].ColorMaterial is not null)
+
+
+
+        if (spoilers[selectedSpoilerIndex].ColorMaterial is not null || spoilers[selectedSpoilerIndex].ColorMaterial != null)
         {
+            //Debug.Log(spoilers[selectedSpoilerIndex].ColorMaterial + "a" + (spoilers[selectedSpoilerIndex].ColorMaterial == null) + "b" + spoilers[selectedSpoilerIndex].ColorMaterial is null);
+
             if (blendMods)
                 spoilers[selectedSpoilerIndex].ColorMaterial.DOColor(c, 1);
             else

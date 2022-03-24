@@ -821,6 +821,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &716686222 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2263823928100544664, guid: 3b46486f4c4acb24eb0906720a5dcf8f, type: 3}
+  m_PrefabInstance: {fileID: 2265000130267100636}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &772440506
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1218,7 +1223,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.1
   far clip plane: 1000
   field of view: 60
   orthographic: 0
@@ -1275,7 +1280,8 @@ MonoBehaviour:
   wheelCamSpot: {fileID: 1802040444}
   spoilerCamSpot: {fileID: 1734296766}
   orbitCenter: {fileID: 2024048199}
-  camera: {fileID: 963194227}
+  deceleration: 15
+  speedFluctuation: 5
 --- !u!1001 &965855048
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2697,21 +2703,28 @@ MonoBehaviour:
   cameraController: {fileID: 963194229}
   carMaterial: {fileID: 2100000, guid: 733ebe3ead69b6843842de9908002071, type: 2}
   bodyColors:
-  - {r: 1, g: 0.12284151, b: 0, a: 1}
-  - {r: 1, g: 0.64211833, b: 0, a: 1}
-  - {r: 0.9622642, g: 0.7736556, b: 0, a: 1}
-  - {r: 0.648632, g: 0.990566, b: 0, a: 1}
-  - {r: 0.16780205, g: 0.5176471, b: 0.1013261, a: 1}
-  - {r: 0, g: 0.9056604, b: 0.37548065, a: 1}
-  - {r: 0.28235295, g: 0.8196079, b: 1, a: 1}
-  - {r: 0.1802243, g: 0.23921569, b: 0.8490566, a: 1}
-  - {r: 0.26963866, g: 0.09852261, b: 0.7735849, a: 1}
-  - {r: 0.8235294, g: 0.0980392, b: 0.77254903, a: 1}
-  - {r: 0.3679245, g: 0.08156817, b: 0.16911203, a: 1}
-  - {r: 0.23584908, g: 0.04561232, b: 0, a: 1}
-  - {r: 0, g: 0, b: 0, a: 1}
-  - {r: 0.5188679, g: 0.5188679, b: 0.5188679, a: 1}
-  - {r: 0.9245283, g: 0.9245283, b: 0.9245283, a: 1}
+  - Name: red
+    Color: {r: 0.8679245, g: 0.1514774, b: 0.1514774, a: 1}
+  - Name: magenta
+    Color: {r: 0.9245283, g: 0, b: 0.40311846, a: 1}
+  - Name: pink
+    Color: {r: 0.71802676, g: 0.19326274, b: 0.9528302, a: 1}
+  - Name: purple
+    Color: {r: 0.35621297, g: 0, b: 0.9716981, a: 1}
+  - Name: darkblue
+    Color: {r: 0.044544343, g: 0.06352024, b: 0.7264151, a: 1}
+  - Name: lightblue
+    Color: {r: 0.227451, g: 0.60784316, b: 0.8196079, a: 1}
+  - Name: green
+    Color: {r: 0, g: 0.9150943, b: 0.31616858, a: 1}
+  - Name: yellow
+    Color: {r: 1, g: 0.94471574, b: 0, a: 1}
+  - Name: black
+    Color: {r: 0.16037738, g: 0.16037738, b: 0.16037738, a: 1}
+  - Name: grey
+    Color: {r: 0.46226418, g: 0.46226418, b: 0.46226418, a: 1}
+  - Name: white
+    Color: {r: 0.9622642, g: 0.9622642, b: 0.9622642, a: 1}
   carBody: {fileID: 1813375870340420}
   wheelPositions:
   - {fileID: 1050304413}
@@ -2723,29 +2736,37 @@ MonoBehaviour:
   colorsPanel: {fileID: 895136257}
   colorIcon: {fileID: 21300000, guid: 718eeca893704754a84c7de4027b000c, type: 3}
   wheels:
-  - Icon: {fileID: 21300000, guid: edfe20b74b37b944ab9791a9c6729f96, type: 3}
+  - Name: 
+    Icon: {fileID: 21300000, guid: edfe20b74b37b944ab9791a9c6729f96, type: 3}
     Model: {fileID: 1797004301820822998, guid: f5d96be4594c1574bbaccdd7bd92aaed, type: 3}
     ColorMaterial: {fileID: 0}
-  - Icon: {fileID: 21300000, guid: 6e2db98bf07784e4ba1b3454f5fbed1b, type: 3}
+  - Name: 
+    Icon: {fileID: 21300000, guid: 6e2db98bf07784e4ba1b3454f5fbed1b, type: 3}
     Model: {fileID: 8730994238342262470, guid: bc184b7ae7464b8448a8fdccd79dad8a, type: 3}
     ColorMaterial: {fileID: 0}
-  - Icon: {fileID: 21300000, guid: bf793c1958e19c9438ed0f7ba240668a, type: 3}
+  - Name: 
+    Icon: {fileID: 21300000, guid: bf793c1958e19c9438ed0f7ba240668a, type: 3}
     Model: {fileID: 3915857490296648872, guid: 587ac1a912901024d9b9ddad1f9867b2, type: 3}
     ColorMaterial: {fileID: 0}
-  - Icon: {fileID: 21300000, guid: f97f459cb11262446aeed29fbec55e79, type: 3}
+  - Name: 
+    Icon: {fileID: 21300000, guid: f97f459cb11262446aeed29fbec55e79, type: 3}
     Model: {fileID: 1655518387107614, guid: ca970b0687dbd6f46baed8c70137e880, type: 3}
     ColorMaterial: {fileID: 0}
   spoilers:
-  - Icon: {fileID: 21300000, guid: b02c3b4a60f0a17479e7c102656633fc, type: 3}
+  - Name: Spoiler1
+    Icon: {fileID: 21300000, guid: b02c3b4a60f0a17479e7c102656633fc, type: 3}
     Model: {fileID: 6122086500621551761}
     ColorMaterial: {fileID: 2100000, guid: d9c9d8ff857d2cf418745e1b569ee90c, type: 2}
-  - Icon: {fileID: 21300000, guid: 28e5ee5c9d670d043864e248e10b7330, type: 3}
+  - Name: VysokeKridlo
+    Icon: {fileID: 21300000, guid: 28e5ee5c9d670d043864e248e10b7330, type: 3}
     Model: {fileID: 7174220827838390463}
     ColorMaterial: {fileID: 2100000, guid: 4d84227238fd1a546b41d557f278c989, type: 2}
-  - Icon: {fileID: 21300000, guid: 6567612a9de0f954f9791a532ff879c0, type: 3}
+  - Name: Spoiler3Uhlik
+    Icon: {fileID: 21300000, guid: 6567612a9de0f954f9791a532ff879c0, type: 3}
     Model: {fileID: 2359161523100896877}
     ColorMaterial: {fileID: 0}
-  - Icon: {fileID: 21300000, guid: dd2e56b0fee0a6047a62553e343ab1e0, type: 3}
+  - Name: Spoiler3Barevnej
+    Icon: {fileID: 21300000, guid: dd2e56b0fee0a6047a62553e343ab1e0, type: 3}
     Model: {fileID: 8049013809676927382}
     ColorMaterial: {fileID: 2100000, guid: 00f8e938a1094364ea20e2a1e294f760, type: 2}
   spoilerHolder: {fileID: 1355783998}
@@ -2806,6 +2827,102 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2260945252501317542, guid: 3b46486f4c4acb24eb0906720a5dcf8f, type: 3}
   m_PrefabInstance: {fileID: 2265000130267100636}
   m_PrefabAsset: {fileID: 0}
+--- !u!82 &4107931456557691
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 716686222}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: edacdd78b4a7aeb41b0b1950d2096501, type: 3}
+  m_PlayOnAwake: 1
+  m_Volume: 0.02
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!4 &29511752929532588 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4106790321595437335, guid: a7e16c14930ff794b89cf3a6e66e6298, type: 3}

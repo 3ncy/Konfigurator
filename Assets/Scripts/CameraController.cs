@@ -8,7 +8,6 @@ using UnityEngine.UI;
 public class CameraController : MonoBehaviour
 {
     [SerializeField] Transform cameraSpots; //tohle by slo dat jako array transformu tech spotu a ne getovat, pokud je to velkej vykonostni problem
-    //int selectedSpot = 0;
     [SerializeField] Transform car;
     [SerializeField] float speedX;
     [SerializeField] float speedY;
@@ -16,13 +15,19 @@ public class CameraController : MonoBehaviour
     [SerializeField] float maxZoom;
     [SerializeField] float minZoom;
 
-
     [SerializeField] Transform wheelCamSpot;
     [SerializeField] Transform spoilerCamSpot;
 
-    public Transform orbitCenter;
+    [SerializeField] Transform orbitCenter;
 
-    [SerializeField] Camera camera;
+    [SerializeField] float deceleration;
+    [SerializeField] float speedFluctuation;
+    float degX;
+    float avgDegX;
+    float degY;
+    float avgDegY;
+    bool moving = false;    
+
 
     // Update is called once per frame
     void Update()
@@ -33,26 +38,62 @@ public class CameraController : MonoBehaviour
         }
 
 
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButtonDown(0))
+        {
+            //abych si omylem neposunul kameru kdyz klikam
+            if (EventSystem.current.IsPointerOverGameObject())
+                return;
+
+            moving = true;
+        }
+        if (Input.GetMouseButton(0) && moving)
         {
             //abych si omylem neposunul kameru kdyz klikam
             if (EventSystem.current.IsPointerOverGameObject())
                 return;
 
 
-            transform.LookAt(orbitCenter);
+            transform.LookAt(car);
 
 
-            transform.RotateAround(car.transform.position, Vector3.up, Input.GetAxis("Mouse X") * Time.deltaTime * speedX);
+            //orbitovani
+            degX = Input.GetAxis("Mouse X") * Time.deltaTime * speedX;
+            avgDegX = Mathf.Lerp(avgDegX, degX, Time.deltaTime * speedFluctuation); //popr Mathf.SmoothDamp
 
 
+            //tilteni
             orbitCenter.right = transform.right;
+            degY = -Input.GetAxis("Mouse Y") * Time.deltaTime * speedY;
+            avgDegY = Mathf.Lerp(avgDegY, degY, Time.deltaTime * speedFluctuation);
 
-            float moveDegrees = -Input.GetAxis("Mouse Y") * Time.deltaTime * speedY;
+        }
+        else
+        {
+            if (moving)
+            {
+                degX = avgDegX;
+                degY = avgDegY;
+                moving = false;
+            }
+            degX = Mathf.Lerp(degX, 0, Time.deltaTime * deceleration);
+            degY = Mathf.Lerp(degY, 0, Time.deltaTime * deceleration);
 
-            float cameraAngle = Quaternion.Angle(transform.rotation, orbitCenter.rotation);
-            transform.RotateAround(car.transform.position, transform.right,
-                (cameraAngle + moveDegrees > 1 && cameraAngle + moveDegrees < 89) ? moveDegrees : 0);
+            if (Mathf.Abs(degX) < 0.00001f) degX = 0;
+            if (Mathf.Abs(degY) < 0.00001f) degY = 0;
+        }
+
+
+        //orbitovani
+        transform.RotateAround(car.position, Vector3.up, degX);
+
+        //titleni
+        float cameraAngle = Quaternion.Angle(transform.rotation, orbitCenter.rotation);
+        transform.RotateAround(car.transform.position, transform.right, (cameraAngle + degY > 1 && cameraAngle + degY < 89) ? degY : 0);
+
+        if (transform.position.y < 0.1) //vetsinu casu to funguje bez toho, ale kdyz se hra malinko kousne a deltaTime se zvedne,tak se kamera mohla dostat pod zem
+        {
+            transform.position = new Vector3(transform.position.x, 0.1f, transform.position.z);
+            transform.LookAt(car);
         }
 
     }
@@ -65,6 +106,7 @@ public class CameraController : MonoBehaviour
 
     public void FocusWheel()
     {
+        //todo: kdyz byde cas, tak zaridit aby to jelo k *nejblizsimu* kolu, aby se omezilo prejizdeni skrz auto
         transform.DOMove(wheelCamSpot.position, 1f);
         transform.DORotateQuaternion(wheelCamSpot.rotation, 1f);
     }

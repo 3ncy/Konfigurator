@@ -7,9 +7,9 @@ using UnityEngine.UI;
 
 public class Konfigurator : MonoBehaviour
 {
-    [System.Serializable]
-    public struct Mod
+    [System.Serializable] public struct Mod
     {
+        public string Name;
         public Sprite Icon;
         public GameObject Model;
 #nullable enable
@@ -17,19 +17,18 @@ public class Konfigurator : MonoBehaviour
 #nullable disable
     }
 
-    public struct color //todo: ::::
+    [System.Serializable] public struct color
     {
         public string Name;
         public Color Color;
     }
 
-    public struct Wheel { }
 
     [SerializeField] CameraController cameraController;
 
     [SerializeField] Material carMaterial;
-    [SerializeField] Color[] bodyColors;
-    Color currentColor;
+    [SerializeField] color[] bodyColors;
+    color currentColor;
     [SerializeField] GameObject carBody;
     [SerializeField] Transform[] wheelPositions;
     [SerializeField] VerticalLayoutGroup wheelsPanel;
@@ -51,19 +50,18 @@ public class Konfigurator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //celou tuhle logiku prolly presunout do samostatneho skriptu, ktery se bude starat o ui
-
         //init buttons
-        foreach (Color color in bodyColors)
+
+        foreach (color c in bodyColors)
         {
             GameObject button = Instantiate(modButtonPrefab);
             button.GetComponent<RectTransform>().sizeDelta = new Vector2(50, 62);
             button.transform.SetParent(colorsPanel.transform, false);
             button.GetComponent<Image>().sprite = colorIcon;
-            button.GetComponent<Image>().color = color;
+            button.GetComponent<Image>().color = c.Color;
             button.GetComponent<Button>().onClick.AddListener(() =>
             {
-                ChangeColor(color, true);
+                ChangeColor(c, true);
             });
         }
 
@@ -92,7 +90,7 @@ public class Konfigurator : MonoBehaviour
         }
 
 
-        currentColor = carMaterial.color;
+        currentColor = bodyColors.First(c => c.Color == carMaterial.color);
     }
 
     public void ChangeSpoiler(int spoilerIndex)
@@ -127,22 +125,16 @@ public class Konfigurator : MonoBehaviour
         }
     }
 
-    public void ChangeColor(Color c, bool blendMods) //todo: pridat barvam jmena
+    public void ChangeColor(color c, bool blendMods)
     {
-        //carMaterial.color = c;
-        carMaterial.DOColor(c, 1);
+        carMaterial.DOColor(c.Color, 1);
 
-
-
-        if (spoilers[selectedSpoilerIndex].ColorMaterial is not null || spoilers[selectedSpoilerIndex].ColorMaterial != null)
+        if(spoilers[selectedSpoilerIndex].ColorMaterial != null)
         {
-            //Debug.Log(spoilers[selectedSpoilerIndex].ColorMaterial + "a" + (spoilers[selectedSpoilerIndex].ColorMaterial == null) + "b" + spoilers[selectedSpoilerIndex].ColorMaterial is null);
-
             if (blendMods)
-                spoilers[selectedSpoilerIndex].ColorMaterial.DOColor(c, 1);
+                spoilers[selectedSpoilerIndex].ColorMaterial.DOColor(c.Color, 1);
             else
-                spoilers[selectedSpoilerIndex].ColorMaterial.color = c;
-
+                spoilers[selectedSpoilerIndex].ColorMaterial.color = c.Color;
         }
 
         currentColor = c;

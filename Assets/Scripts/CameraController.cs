@@ -26,7 +26,7 @@ public class CameraController : MonoBehaviour
     float avgDegX;
     float degY;
     float avgDegY;
-    bool moving = false;    
+    bool moving = false;
 
 
     // Update is called once per frame
@@ -34,6 +34,8 @@ public class CameraController : MonoBehaviour
     {
         if (Input.mouseScrollDelta.y != 0) // zoomovani kamery
         {
+            if (EventSystem.current.IsPointerOverGameObject())
+                return;
             transform.position += transform.forward * (Input.mouseScrollDelta.y * scrollSpeed * Time.deltaTime);
         }
 
@@ -45,6 +47,9 @@ public class CameraController : MonoBehaviour
                 return;
 
             moving = true;
+
+
+            //transform.DODynamicLookAt(car.position, 0.75f);
         }
         if (Input.GetMouseButton(0) && moving)
         {

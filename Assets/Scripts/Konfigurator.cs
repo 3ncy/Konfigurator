@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class Konfigurator : MonoBehaviour
@@ -54,16 +55,19 @@ public class Konfigurator : MonoBehaviour
     [Header("Saves")]
 
     private List<Preset> presets;
-    private string filename = "/presets";
+    private string savefileName = "/presets";
     [SerializeField] Transform presetsPanel;
     [SerializeField] GameObject presetButtonPrefab;
-    //[SerializeField] Camera screenshotCam;
-    [SerializeField] RenderTexture screenshotTexture;
-    [SerializeField] private int? selectedPresetIndex; //todo: odstranit serializefield, nemusi byt viditelne
+    [SerializeField] Camera screenshotCam;
+    [SerializeField] Camera mainCam;
+    [SerializeField] RenderTexture screenshotRenderTexture;
+    [SerializeField] private int? selectedPresetIndex; //todo: odstranit serializefield, nemusi byt viditelne    
+    public Material screenshotMaterial;
 
     // Start is called before the first frame update
     void Start()
     {
+
         //init buttons
 
         foreach (color c in bodyColors)
@@ -108,15 +112,15 @@ public class Konfigurator : MonoBehaviour
 
         #region load settings
 
-        if (File.Exists(Application.persistentDataPath + filename))
+        if (File.Exists(Application.persistentDataPath + savefileName))
         {
             BinaryFormatter formatter = new BinaryFormatter();
-            FileStream file = File.OpenRead(Application.persistentDataPath + filename);
+            FileStream file = File.OpenRead(Application.persistentDataPath + savefileName);
             if (file.Length > 0)
             {
                 presets = formatter.Deserialize(file) as List<Preset>;
                 file.Close();
-                Debug.Log($"loaded {presets.Count} presets from {Application.persistentDataPath + filename}");
+                Debug.Log($"loaded {presets.Count} presets from {Application.persistentDataPath + savefileName}");
             }
             else
             {
@@ -164,6 +168,10 @@ public class Konfigurator : MonoBehaviour
         });
     }
 
+    /// <summary>
+    /// Loads the <paramref name="preset"/> car to the viewport
+    /// </summary>
+    /// <param name="preset">The car preset to load</param>
     public void LoadPreset(Preset preset)
     {
         if (selectedPresetIndex != null) //odstraneni ramecky z minuleho oznaceneho presetu
@@ -174,56 +182,64 @@ public class Konfigurator : MonoBehaviour
         presetsPanel.GetChild((int)selectedPresetIndex).GetComponent<Outline>().enabled = true;
 
 
+        ChangeSpoiler(System.Array.IndexOf(spoilers, spoilers.First(s => s.Name == preset.SpoilerName)), false);
+        ChangeWheels(System.Array.IndexOf(wheels, wheels.First(w => w.Name == preset.WheelsName)), false); //todo: nefunguje
         ChangeColor(bodyColors.First(c => c.Name == preset.ColorName), true);
-        ChangeSpoiler(System.Array.IndexOf(spoilers, spoilers.First(s => s.Name == preset.SpoilerName)));
-        ChangeWheels(System.Array.IndexOf(wheels, wheels.First(w => w.Name == preset.WheelsName)));
-
-        //todo: jeste loadnout to auto
-        Debug.Log(preset.ColorName + preset.WheelsName + preset.SpoilerName + preset.IconPath);
     }
 
+    /// <summary>
+    /// Saves current car configuratoiin as a preset
+    /// </summary>
     public void AddPreset()
     {
+        Texture2D renderResult = new Texture2D(screenshotRenderTexture.width, screenshotRenderTexture.height, TextureFormat.ARGB32, false);
+        RenderTexture.active = screenshotRenderTexture;
+        renderResult.ReadPixels(new Rect(0, 0, screenshotRenderTexture.width, screenshotRenderTexture.height), 0, 0);
+        renderResult.Apply();
+        byte[] screenshotBytes = renderResult.EncodeToPNG();
+
+        string iconFilename = Path.Combine(Application.dataPath, "/screens/" + System.DateTime.Now.ToString("yyyyMMddHHmmssfff") + ".png");
+
+        File.WriteAllBytes(Application.dataPath + iconFilename, screenshotBytes);    
+        //StartCoroutine(TakeScreenshot());
+
+
         Preset preset = new Preset
         {
             ColorName = currentColor.Name,
             WheelsName = wheels[selectedWheelIndex].Name,
             SpoilerName = spoilers[selectedSpoilerIndex].Name,
-            IconPath = @"C:\Users\encyk\Development\Unity\Konfigurator\Assets\screens\a.png"
+            IconPath = iconFilename
         };
 
         presets.Add(preset);
 
         AddPresetToUI(preset);//todo: predavat tu texturu
 
+        Debug.Log($"saved {preset.ColorName} {preset.WheelsName} {preset.SpoilerName} to {preset.IconPath}");
+
         //ScreenCapture.CaptureScreenshot(Application.persistentDataPath + "/ooo.png");
         //Debug.Log(Application.persistentDataPath);
         //Debug.Log(Application.dataPath);
 
-        //StartCoroutine(TakeScreenshot());
+
+
     }
+
+    //todo: dodelat dokumentaci
 
     private IEnumerator TakeScreenshot()
     {
+
         yield return new WaitForEndOfFrame();
-
-        //RenderTexture renderTexture = screenshotCam.targetTexture;
-        //Texture2D renderResult = new Texture2D(renderTexture.width, renderTexture.height, TextureFormat.ARGB32, false);
-        //Rect rect = new Rect(0, 0, renderTexture.width, renderTexture.height);
-        //renderResult.ReadPixels(rect, 0, 0);
-        ////RenderTexture.ReleaseTemporary(renderTexture);
-
-        Texture2D renderResult = new Texture2D(screenshotTexture.width, screenshotTexture.height);
-        Rect rect = new Rect(0, 0, screenshotTexture.width, screenshotTexture.height);
-        RenderTexture.active = screenshotTexture;
-        renderResult.ReadPixels(rect, 0, 0);
+        Texture2D renderResult = new Texture2D(screenshotRenderTexture.width, screenshotRenderTexture.height, TextureFormat.ARGB32, false);
+        RenderTexture.active = screenshotRenderTexture;
+        renderResult.ReadPixels(new Rect(0, 0, screenshotRenderTexture.width, screenshotRenderTexture.height), 0, 0);
         renderResult.Apply();
-
-        RenderTexture.active = null;
-
-
-
         byte[] screenshotBytes = renderResult.EncodeToPNG();
+        
+
+
         File.WriteAllBytes(Application.dataPath + "/screens/a.png", screenshotBytes);
     }
 
@@ -243,15 +259,15 @@ public class Konfigurator : MonoBehaviour
         //ukladani
 
         BinaryFormatter formatter = new BinaryFormatter();
-        FileStream file = File.Open(Application.persistentDataPath + filename, FileMode.Create);
+        FileStream file = File.Open(Application.persistentDataPath + savefileName, FileMode.Create);
         formatter.Serialize(file, presets);
         file.Close();
-        Debug.Log("saved to " + Application.persistentDataPath + filename);
+        Debug.Log("saved to " + Application.persistentDataPath + savefileName);
     }
 
-    public void ChangeSpoiler(int spoilerIndex)
+    public void ChangeSpoiler(int spoilerIndex, bool focus = true)
     {
-        cameraController.FocusSpoiler();
+        if (focus) cameraController.FocusSpoiler();
 
         foreach (Transform t in spoilerHolder) //asi neni idealni, ale na pokud bude potreba optimalizace, tak to nejak pujde. Pokud presunu UI 
                                                //do samostatne classtky, tak si tu musu necht promennou lastSpoiler a podle te to budu vypinat.
@@ -264,11 +280,11 @@ public class Konfigurator : MonoBehaviour
         ChangeColor(currentColor, false);
     }
 
-    public void ChangeWheels(int wheelIndex) //mozna ne pres index? (-_-)?  //a tohle je prej "scratching head" emoticon
-                                             // ted me napadlo ze v souvislosti s dynamickym ui, tak bych mohl mit list prefabu a pri startu aplikcae
-                                             // pridat ty prefaby kolum (a mby si na ne keepovat referenci??)
+    public void ChangeWheels(int wheelIndex, bool focus = true) //mozna ne pres index? (-_-)?  //a tohle je prej "scratching head" emoticon
+                                                                // ted me napadlo ze v souvislosti s dynamickym ui, tak bych mohl mit list prefabu a pri startu aplikcae
+                                                                // pridat ty prefaby kolum (a mby si na ne keepovat referenci??)
     {
-        cameraController.FocusWheel();
+        if (focus) cameraController.FocusWheel();
 
         foreach (Transform wheelHolder in wheelPositions)
         {

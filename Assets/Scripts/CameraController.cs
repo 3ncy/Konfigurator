@@ -29,6 +29,7 @@ public class CameraController : MonoBehaviour
     bool moving = false;
 
 
+
     // Update is called once per frame
     void Update()
     {
@@ -48,7 +49,7 @@ public class CameraController : MonoBehaviour
 
             moving = true;
 
-
+            //todo:
             //transform.DODynamicLookAt(car.position, 0.75f);
         }
         if (Input.GetMouseButton(0) && moving)
@@ -100,7 +101,6 @@ public class CameraController : MonoBehaviour
             transform.position = new Vector3(transform.position.x, 0.1f, transform.position.z);
             transform.LookAt(car);
         }
-
     }
 
     public void FocusSpoiler()

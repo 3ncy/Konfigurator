@@ -198,9 +198,11 @@ public class Konfigurator : MonoBehaviour
         renderResult.Apply();
         byte[] screenshotBytes = renderResult.EncodeToPNG();
 
-        string iconFilename = Path.Combine(Application.dataPath, "/screens/" + System.DateTime.Now.ToString("yyyyMMddHHmmssfff") + ".png");
+        string iconFilename = Application.dataPath + "/screens/" + System.DateTime.Now.ToString("yyyyMMddHHmmssfff") + ".png";
 
-        File.WriteAllBytes(Application.dataPath + iconFilename, screenshotBytes);    
+        Debug.Log(iconFilename);
+
+        File.WriteAllBytes(iconFilename, screenshotBytes);    
         //StartCoroutine(TakeScreenshot());
 
 
@@ -228,20 +230,20 @@ public class Konfigurator : MonoBehaviour
 
     //todo: dodelat dokumentaci
 
-    private IEnumerator TakeScreenshot()
-    {
+    //private IEnumerator TakeScreenshot()
+    //{
 
-        yield return new WaitForEndOfFrame();
-        Texture2D renderResult = new Texture2D(screenshotRenderTexture.width, screenshotRenderTexture.height, TextureFormat.ARGB32, false);
-        RenderTexture.active = screenshotRenderTexture;
-        renderResult.ReadPixels(new Rect(0, 0, screenshotRenderTexture.width, screenshotRenderTexture.height), 0, 0);
-        renderResult.Apply();
-        byte[] screenshotBytes = renderResult.EncodeToPNG();
+    //    yield return new WaitForEndOfFrame();
+    //    Texture2D renderResult = new Texture2D(screenshotRenderTexture.width, screenshotRenderTexture.height, TextureFormat.ARGB32, false);
+    //    RenderTexture.active = screenshotRenderTexture;
+    //    renderResult.ReadPixels(new Rect(0, 0, screenshotRenderTexture.width, screenshotRenderTexture.height), 0, 0);
+    //    renderResult.Apply();
+    //    byte[] screenshotBytes = renderResult.EncodeToPNG();
         
 
 
-        File.WriteAllBytes(Application.dataPath + "/screens/a.png", screenshotBytes);
-    }
+    //    File.WriteAllBytes(Application.dataPath + "/screens/a.png", screenshotBytes);
+    //}
 
     public void RemovePreset()
     {

@@ -48,4 +48,4 @@ sysinfo.txt
 crashlytics-build.properties
 
 # vsechny nahledovky savu ktere se vytvorily pri testovani v editoru
-screens/*
+Assets/screens/*

@@ -707,7 +707,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &369598788
+--- !u!1 &392520932
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -715,95 +715,28 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 369598792}
-  - component: {fileID: 369598791}
-  - component: {fileID: 369598790}
-  - component: {fileID: 369598789}
+  - component: {fileID: 392520933}
   m_Layer: 0
-  m_Name: Plane
+  m_Name: WheelCamPosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!64 &369598789
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 369598788}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &369598790
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 369598788}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 86480ba0b89d5174f83b0a38fdc8ee8b, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!33 &369598791
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 369598788}
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!4 &369598792
+  m_IsActive: 1
+--- !u!4 &392520933
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 369598788}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.95, y: 0.58, z: -0.23}
-  m_LocalScale: {x: 0.14529629, y: 0.14529629, z: 0.14529629}
+  m_GameObject: {fileID: 392520932}
+  m_LocalRotation: {x: 0.08696219, y: -0.320288, z: 0.029540986, w: 0.9428576}
+  m_LocalPosition: {x: 1.47, y: 0.449, z: -1.914}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &402195568
 GameObject:
@@ -1839,11 +1772,11 @@ MonoBehaviour:
   car: {fileID: 850685766}
   speedX: 650
   speedY: 500
-  scrollSpeed: 20
-  maxZoom: 0
-  minZoom: 0
-  wheelCamSpot: {fileID: 1802040444}
-  spoilerCamSpot: {fileID: 1734296766}
+  scrollSpeed: 0.1
+  minZoom: 2.45
+  maxZoom: 6
+  wheelCamSpot: {fileID: 392520933}
+  spoilerCamSpot: {fileID: 2146825693}
   orbitCenter: {fileID: 2024048199}
   deceleration: 15
   speedFluctuation: 5
@@ -3258,68 +3191,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bc184b7ae7464b8448a8fdccd79dad8a, type: 3}
---- !u!1 &1734296765
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1734296766}
-  m_Layer: 0
-  m_Name: SpoilerCamPositoin
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1734296766
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1734296765}
-  m_LocalRotation: {x: 0.1959281, y: -0.4857111, z: 0.11270149, w: 0.8443905}
-  m_LocalPosition: {x: 1.289191, y: 1.4416046, z: -2.4745078}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1802040443
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1802040444}
-  m_Layer: 0
-  m_Name: WheelCamPosition
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1802040444
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1802040443}
-  m_LocalRotation: {x: -0.068871304, y: 0.8579493, z: -0.11943529, w: -0.4948888}
-  m_LocalPosition: {x: 1.6905127, y: 0.69053936, z: 1.7431693}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1823913755
 GameObject:
   m_ObjectHideFlags: 0
@@ -3744,6 +3615,7 @@ MonoBehaviour:
   spoilersPanel: {fileID: 1557771942}
   presetsPanel: {fileID: 804472851}
   presetButtonPrefab: {fileID: 75906226686606205, guid: f39a27267ab70fb45b860cf3c00c7d3d, type: 3}
+  missingPicTexture: {fileID: 0}
   screenshotCam: {fileID: 404765714}
   mainCam: {fileID: 963194227}
   screenshotRenderTexture: {fileID: 8400000, guid: 97b3ff578627e3b498473453248c381d, type: 2}
@@ -3885,6 +3757,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2139279341}
   m_CullTransparentMesh: 1
+--- !u!1 &2146825692
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2146825693}
+  m_Layer: 0
+  m_Name: SpoilerCamPosition
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2146825693
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2146825692}
+  m_LocalRotation: {x: 0.22684182, y: -0.12599345, z: 0.029608175, w: 0.96529365}
+  m_LocalPosition: {x: 0.695, y: 1.347, z: -2.617}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1813375870340420 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2263222499532617880, guid: 3b46486f4c4acb24eb0906720a5dcf8f, type: 3}

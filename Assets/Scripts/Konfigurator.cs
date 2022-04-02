@@ -29,6 +29,7 @@ public class Konfigurator : MonoBehaviour
     }
 
 
+
     [SerializeField] CameraController cameraController;
 
     [SerializeField] Material carMaterial;
@@ -58,11 +59,13 @@ public class Konfigurator : MonoBehaviour
     private string savefileName = "/presets";
     [SerializeField] Transform presetsPanel;
     [SerializeField] GameObject presetButtonPrefab;
+    [SerializeField] Texture2D missingPicTexture;
     [SerializeField] Camera screenshotCam;
     [SerializeField] Camera mainCam;
     [SerializeField] RenderTexture screenshotRenderTexture;
-    [SerializeField] private int? selectedPresetIndex; //todo: odstranit serializefield, nemusi byt viditelne    
-    public Material screenshotMaterial;
+    [SerializeField] Material screenshotMaterial;
+    private int? selectedPresetIndex;
+
 
     // Start is called before the first frame update
     void Start()
@@ -133,7 +136,6 @@ public class Konfigurator : MonoBehaviour
             presets = new();
             Debug.Log("file doens't exist");
         }
-        //todo: zesvetlit ten panel configuraci kdyz tam nic neni.
 
         if (presets.Count > 0)
         {
@@ -141,7 +143,7 @@ public class Konfigurator : MonoBehaviour
             {
                 AddPresetToUI(preset);
             }
-            //todo: pokud je souhrna sirka tlacitek vetsi nez sirka scrollview, nastavit pivot content panelu X=0.5.
+            //mby pokud je souhrna sirka tlacitek vetsi nez sirka scrollview, nastavit pivot content panelu X=0.5.
             // Pokud se to ale mazanim tlacitka snizi, tak to zase nastavit na x=0. A pokud se to pridavanim presetu zvedne, tak zase na 0.5
         }
         #endregion
@@ -152,12 +154,14 @@ public class Konfigurator : MonoBehaviour
         GameObject presetButton = Instantiate(presetButtonPrefab);
         presetButton.GetComponent<RectTransform>().sizeDelta = new Vector2(90, 100);
         presetButton.transform.SetParent(presetsPanel.transform, false);
-        //todo: nastavit ikonu
+
         if (pic == null)
         {
-            pic = new Texture2D(256, 256);//todo:magicka cisla, asi predelat. anebo taky apis ne, tohle se nebude menit
-            //todo: check jestli soubor existuje 
-            ImageConversion.LoadImage(pic, File.ReadAllBytes(preset.IconPath));
+            pic = new Texture2D(256, 256);//tak akorat rozliseni pro textury, bohate staci
+            if (File.Exists(preset.IconPath))
+                ImageConversion.LoadImage(pic, File.ReadAllBytes(preset.IconPath));
+            else
+                pic = missingPicTexture;
         }
 
 
@@ -174,6 +178,8 @@ public class Konfigurator : MonoBehaviour
     /// <param name="preset">The car preset to load</param>
     public void LoadPreset(Preset preset)
     {
+        //Debug.Log(preset.ColorName + preset.WheelsName + preset.SpoilerName + preset.IconPath
+
         if (selectedPresetIndex != null) //odstraneni ramecky z minuleho oznaceneho presetu
             presetsPanel.GetChild((int)selectedPresetIndex).GetComponent<Outline>().enabled = false;
 
@@ -183,12 +189,12 @@ public class Konfigurator : MonoBehaviour
 
 
         ChangeSpoiler(System.Array.IndexOf(spoilers, spoilers.First(s => s.Name == preset.SpoilerName)), false);
-        ChangeWheels(System.Array.IndexOf(wheels, wheels.First(w => w.Name == preset.WheelsName)), false); //todo: nefunguje
+        ChangeWheels(System.Array.IndexOf(wheels, wheels.First(w => w.Name == preset.WheelsName)), false);
         ChangeColor(bodyColors.First(c => c.Name == preset.ColorName), true);
     }
 
     /// <summary>
-    /// Saves current car configuratoiin as a preset
+    /// Saves current car configuration as a preset
     /// </summary>
     public void AddPreset()
     {
@@ -198,13 +204,14 @@ public class Konfigurator : MonoBehaviour
         renderResult.Apply();
         byte[] screenshotBytes = renderResult.EncodeToPNG();
 
-        string iconFilename = Application.dataPath + "/screens/" + System.DateTime.Now.ToString("yyyyMMddHHmmssfff") + ".png";
+        string iconFilename = Application.dataPath + "/screens/";
+        if (!Directory.Exists(iconFilename)) //pokud neexistuje slozka screens
+            Directory.CreateDirectory(iconFilename);
 
-        Debug.Log(iconFilename);
 
-        File.WriteAllBytes(iconFilename, screenshotBytes);    
-        //StartCoroutine(TakeScreenshot());
+        iconFilename += System.DateTime.Now.ToString("yyyyMMddHHmmssfff") + ".png";
 
+        File.WriteAllBytes(iconFilename, screenshotBytes);
 
         Preset preset = new Preset
         {
@@ -216,34 +223,14 @@ public class Konfigurator : MonoBehaviour
 
         presets.Add(preset);
 
-        AddPresetToUI(preset);//todo: predavat tu texturu
+        AddPresetToUI(preset);
 
         Debug.Log($"saved {preset.ColorName} {preset.WheelsName} {preset.SpoilerName} to {preset.IconPath}");
-
-        //ScreenCapture.CaptureScreenshot(Application.persistentDataPath + "/ooo.png");
-        //Debug.Log(Application.persistentDataPath);
-        //Debug.Log(Application.dataPath);
-
-
 
     }
 
     //todo: dodelat dokumentaci
 
-    //private IEnumerator TakeScreenshot()
-    //{
-
-    //    yield return new WaitForEndOfFrame();
-    //    Texture2D renderResult = new Texture2D(screenshotRenderTexture.width, screenshotRenderTexture.height, TextureFormat.ARGB32, false);
-    //    RenderTexture.active = screenshotRenderTexture;
-    //    renderResult.ReadPixels(new Rect(0, 0, screenshotRenderTexture.width, screenshotRenderTexture.height), 0, 0);
-    //    renderResult.Apply();
-    //    byte[] screenshotBytes = renderResult.EncodeToPNG();
-        
-
-
-    //    File.WriteAllBytes(Application.dataPath + "/screens/a.png", screenshotBytes);
-    //}
 
     public void RemovePreset()
     {
@@ -282,9 +269,7 @@ public class Konfigurator : MonoBehaviour
         ChangeColor(currentColor, false);
     }
 
-    public void ChangeWheels(int wheelIndex, bool focus = true) //mozna ne pres index? (-_-)?  //a tohle je prej "scratching head" emoticon
-                                                                // ted me napadlo ze v souvislosti s dynamickym ui, tak bych mohl mit list prefabu a pri startu aplikcae
-                                                                // pridat ty prefaby kolum (a mby si na ne keepovat referenci??)
+    public void ChangeWheels(int wheelIndex, bool focus = true)
     {
         if (focus) cameraController.FocusWheel();
 

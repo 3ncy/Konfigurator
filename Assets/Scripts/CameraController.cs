@@ -12,8 +12,8 @@ public class CameraController : MonoBehaviour
     [SerializeField] float speedX;
     [SerializeField] float speedY;
     [SerializeField] float scrollSpeed;
-    [SerializeField] float maxZoom;
     [SerializeField] float minZoom;
+    [SerializeField] float maxZoom;
 
     [SerializeField] Transform wheelCamSpot;
     [SerializeField] Transform spoilerCamSpot;
@@ -37,7 +37,10 @@ public class CameraController : MonoBehaviour
         {
             if (EventSystem.current.IsPointerOverGameObject())
                 return;
-            transform.position += transform.forward * (Input.mouseScrollDelta.y * scrollSpeed * Time.deltaTime);
+            Vector3 zoom = transform.forward * (Input.mouseScrollDelta.y * scrollSpeed);
+            float dist = Vector3.Distance(transform.position + zoom, car.position);
+            if (dist > minZoom && dist < maxZoom)
+                transform.position += zoom;
         }
 
 
@@ -48,9 +51,6 @@ public class CameraController : MonoBehaviour
                 return;
 
             moving = true;
-
-            //todo:
-            //transform.DODynamicLookAt(car.position, 0.75f);
         }
         if (Input.GetMouseButton(0) && moving)
         {
@@ -81,7 +81,7 @@ public class CameraController : MonoBehaviour
                 degY = avgDegY;
                 moving = false;
             }
-            degX = Mathf.Lerp(degX, 0, Time.deltaTime * deceleration);
+            degX = Mathf.Lerp(degX, 0, Time.deltaTime * deceleration); //brzdeni setrvacnosti
             degY = Mathf.Lerp(degY, 0, Time.deltaTime * deceleration);
 
             if (Mathf.Abs(degX) < 0.00001f) degX = 0;
@@ -111,7 +111,6 @@ public class CameraController : MonoBehaviour
 
     public void FocusWheel()
     {
-        //todo: kdyz byde cas, tak zaridit aby to jelo k *nejblizsimu* kolu, aby se omezilo prejizdeni skrz auto
         transform.DOMove(wheelCamSpot.position, 1f);
         transform.DORotateQuaternion(wheelCamSpot.rotation, 1f);
     }

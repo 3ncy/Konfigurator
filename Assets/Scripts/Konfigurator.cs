@@ -56,7 +56,7 @@ public class Konfigurator : MonoBehaviour
     [Header("Saves")]
 
     private List<Preset> presets;
-    private string savefileName = "/presets";
+    private readonly string savefileName = "/presets";
     [SerializeField] Transform presetsPanel;
     [SerializeField] GameObject presetButtonPrefab;
     [SerializeField] Texture2D missingPicTexture;
@@ -149,6 +149,11 @@ public class Konfigurator : MonoBehaviour
         #endregion
     }
 
+    /// <summary>
+    /// Addes <paramref name="preset"/> to the scrollable UI
+    /// </summary>
+    /// <param name="preset">Preset to be added</param>
+    /// <param name="pic">Icon to be displayed. If null, one will be loaded from the <paramref name="preset"/> from file</param>
     private void AddPresetToUI(Preset preset, Texture2D pic = null)
     {
         GameObject presetButton = Instantiate(presetButtonPrefab);
@@ -229,9 +234,9 @@ public class Konfigurator : MonoBehaviour
 
     }
 
-    //todo: dodelat dokumentaci
-
-
+    /// <summary>
+    /// Removes currently selected preset both from UI and the collection
+    /// </summary>
     public void RemovePreset()
     {
         if (selectedPresetIndex == null)
@@ -254,21 +259,29 @@ public class Konfigurator : MonoBehaviour
         Debug.Log("saved to " + Application.persistentDataPath + savefileName);
     }
 
+    /// <summary>
+    /// Chenges car's spoiler to the one referenced via <paramref name="spoilerIndex"/>
+    /// </summary>
+    /// <param name="spoilerIndex">Index of the spoiler to display</param>
+    /// <param name="focus">Determines whether camera should focus the newly changed spoiler</param>
     public void ChangeSpoiler(int spoilerIndex, bool focus = true)
     {
         if (focus) cameraController.FocusSpoiler();
 
-        foreach (Transform t in spoilerHolder) //asi neni idealni, ale na pokud bude potreba optimalizace, tak to nejak pujde. Pokud presunu UI 
-                                               //do samostatne classtky, tak si tu musu necht promennou lastSpoiler a podle te to budu vypinat.
-                                               //tohle je asi hlavne rychlej prototyp
+        foreach (Transform t in spoilerHolder) 
         {
             t.gameObject.SetActive(false);
         }
-        selectedSpoilerIndex = spoilerIndex;           //tohle by moglo jit predelat v souvislosti s komentarem ?
+        selectedSpoilerIndex = spoilerIndex;
         spoilers[spoilerIndex].Model.SetActive(true);
         ChangeColor(currentColor, false);
     }
 
+    /// <summary>
+    /// Changes car's wheels to the ones referenced via <paramref name="wheelIndex"/>
+    /// </summary>
+    /// <param name="wheelIndex">Index of the wheels to display</param>
+    /// <param name="focus">Determines whether camera should focus one of the newly changed wheels</param>
     public void ChangeWheels(int wheelIndex, bool focus = true)
     {
         if (focus) cameraController.FocusWheel();
@@ -286,6 +299,11 @@ public class Konfigurator : MonoBehaviour
         selectedWheelIndex = wheelIndex;
     }
 
+    /// <summary>
+    /// Changes car and potential spoiler's color to <paramref name="c"/>
+    /// </summary>
+    /// <param name="c">Color to change to</param>
+    /// <param name="blendMods">Whether should be the colors blended or not</param>
     public void ChangeColor(color c, bool blendMods)
     {
         carMaterial.DOColor(c.Color, 1);

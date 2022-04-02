@@ -103,12 +103,18 @@ public class CameraController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Changes camera position to get the car Spoiler in the frame
+    /// </summary>
     public void FocusSpoiler()
     {
         transform.DOMove(spoilerCamSpot.position, 1f);
         transform.DORotateQuaternion(spoilerCamSpot.rotation, 1f);
     }
 
+    /// <summary>
+    /// Changes camera position to get one of the cars' Wheels in the frame
+    /// </summary>
     public void FocusWheel()
     {
         transform.DOMove(wheelCamSpot.position, 1f);

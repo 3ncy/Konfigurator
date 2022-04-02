@@ -3615,7 +3615,7 @@ MonoBehaviour:
   spoilersPanel: {fileID: 1557771942}
   presetsPanel: {fileID: 804472851}
   presetButtonPrefab: {fileID: 75906226686606205, guid: f39a27267ab70fb45b860cf3c00c7d3d, type: 3}
-  missingPicTexture: {fileID: 0}
+  missingPicTexture: {fileID: 2800000, guid: 2c4198816ce66b04e92fb0e4e7a304f6, type: 3}
   screenshotCam: {fileID: 404765714}
   mainCam: {fileID: 963194227}
   screenshotRenderTexture: {fileID: 8400000, guid: 97b3ff578627e3b498473453248c381d, type: 2}

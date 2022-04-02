@@ -242,10 +242,9 @@ public class Konfigurator : MonoBehaviour
         if (selectedPresetIndex == null)
             return;
 
-
         presets.RemoveAt((int)selectedPresetIndex);
         Destroy(presetsPanel.GetChild((int)selectedPresetIndex).gameObject);
-
+        selectedPresetIndex = null;
     }
 
     public void OnApplicationQuit()

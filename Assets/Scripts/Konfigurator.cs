@@ -247,15 +247,19 @@ public class Konfigurator : MonoBehaviour
         selectedPresetIndex = null;
     }
 
-    public void OnApplicationQuit()
+    private void SavePreset()
     {
-        //ukladani
-
         BinaryFormatter formatter = new BinaryFormatter();
         FileStream file = File.Open(Application.persistentDataPath + savefileName, FileMode.Create);
         formatter.Serialize(file, presets);
         file.Close();
         Debug.Log("saved to " + Application.persistentDataPath + savefileName);
+    }
+
+    public void OnApplicationQuit()
+    {
+        //ukladani
+        SavePreset();
     }
 
     /// <summary>

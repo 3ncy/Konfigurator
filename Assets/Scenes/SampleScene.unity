@@ -3606,7 +3606,8 @@ MonoBehaviour:
   - {fileID: 1254034444}
   - {fileID: 1512316243}
   wheelsPanel: {fileID: 1366313669}
-  modButtonPrefab: {fileID: 6709513994108519619, guid: b447f71bd9f29864fa09337e4680a385, type: 3}
+  modButtonPrefab: {fileID: 4806285718401178623, guid: c5405acb2e226154cbdd8da01099487c, type: 3}
+  paintjobButton: {fileID: -258173220452706768, guid: b447f71bd9f29864fa09337e4680a385, type: 3}
   colorsPanel: {fileID: 895136257}
   colorIcon: {fileID: 21300000, guid: 718eeca893704754a84c7de4027b000c, type: 3}
   wheels:

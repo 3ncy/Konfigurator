@@ -10,37 +10,18 @@ using UnityEngine.UI;
 
 public class Konfigurator : MonoBehaviour
 {
-    [System.Serializable]
-    public struct Mod
-    {
-        public string Name;
-        public Sprite Icon;
-        public GameObject Model;
-#nullable enable
-        public Material? ColorMaterial;
-#nullable disable
-    }
-
-    [System.Serializable]
-    public struct color
-    {
-        public string Name;
-        public Color Color;
-    }
-
-
-
     [SerializeField] CameraController cameraController;
 
     [SerializeField] Material carMaterial;
-    [SerializeField] color[] bodyColors;
-    color currentColor;
+    [SerializeField] PaintJob[] bodyColors;
+    PaintJob currentColor;
     [SerializeField] GameObject carBody;
     [SerializeField] Transform[] wheelPositions;
     [SerializeField] VerticalLayoutGroup wheelsPanel;
     //int _wheelIndex;
 
-    [SerializeField] GameObject modButtonPrefab;
+    [SerializeField] ModButton modButtonPrefab;
+    [SerializeField] PaintjobButton paintjobButton;
 
     [SerializeField] HorizontalLayoutGroup colorsPanel;
     [SerializeField] Sprite colorIcon;
@@ -73,41 +54,22 @@ public class Konfigurator : MonoBehaviour
 
         //init buttons
 
-        foreach (color c in bodyColors)
+        foreach (PaintJob c in bodyColors)
         {
-            GameObject button = Instantiate(modButtonPrefab);
-            button.GetComponent<RectTransform>().sizeDelta = new Vector2(50, 62);
-            button.transform.SetParent(colorsPanel.transform, false);
-            button.GetComponent<Image>().sprite = colorIcon;
-            button.GetComponent<Image>().color = c.Color;
-            button.GetComponent<Button>().onClick.AddListener(() =>
-            {
-                ChangeColor(c, true);
-            });
+            PaintjobButton paintjob = Instantiate(paintjobButton);
+            paintjob.Initialize(c, () => ChangeColor(c, true), colorsPanel.transform);
         }
 
         foreach (Mod spoiler in spoilers)
         {
-            GameObject button = Instantiate(modButtonPrefab);
-            button.GetComponent<RectTransform>().sizeDelta = new Vector2(62, 50);
-            button.GetComponent<Image>().sprite = spoiler.Icon;
-            button.transform.SetParent(spoilersPanel.transform, false);
-            button.GetComponent<Button>().onClick.AddListener(() =>
-            {
-                ChangeSpoiler(System.Array.IndexOf(spoilers, spoiler)); //ehhhh
-            });
+            ModButton modButton = Instantiate(modButtonPrefab);
+            modButton.Initialize(spoiler, () => ChangeSpoiler(System.Array.IndexOf(spoilers, spoiler)), spoilersPanel.transform);
         }
 
         foreach (Mod wheel in wheels)
         {
-            GameObject button = Instantiate(modButtonPrefab);
-            button.GetComponent<RectTransform>().sizeDelta = new Vector2(62, 50);
-            button.GetComponent<Image>().sprite = wheel.Icon;
-            button.transform.SetParent(wheelsPanel.transform, false);
-            button.GetComponent<Button>().onClick.AddListener(() =>
-            {
-                ChangeWheels(System.Array.IndexOf(wheels, wheel)); //ehhhh
-            });
+            ModButton modButton = Instantiate(modButtonPrefab);
+            modButton.Initialize(wheel, () => ChangeWheels(System.Array.IndexOf(wheels, wheel)), wheelsPanel.transform);
         }
 
         currentColor = bodyColors.First(c => c.Color == carMaterial.color);
@@ -157,7 +119,7 @@ public class Konfigurator : MonoBehaviour
     private void AddPresetToUI(Preset preset, Texture2D pic = null)
     {
         GameObject presetButton = Instantiate(presetButtonPrefab);
-        presetButton.GetComponent<RectTransform>().sizeDelta = new Vector2(90, 100);
+        //presetButton.GetComponent<RectTransform>().sizeDelta = new Vector2(90, 100);
         presetButton.transform.SetParent(presetsPanel.transform, false);
 
         if (pic == null)
@@ -271,7 +233,7 @@ public class Konfigurator : MonoBehaviour
     {
         if (focus) cameraController.FocusSpoiler();
 
-        foreach (Transform t in spoilerHolder) 
+        foreach (Transform t in spoilerHolder)
         {
             t.gameObject.SetActive(false);
         }
@@ -307,7 +269,7 @@ public class Konfigurator : MonoBehaviour
     /// </summary>
     /// <param name="c">Color to change to</param>
     /// <param name="blendMods">Whether should be the colors blended or not</param>
-    public void ChangeColor(color c, bool blendMods)
+    public void ChangeColor(PaintJob c, bool blendMods)
     {
         carMaterial.DOColor(c.Color, 1);
 

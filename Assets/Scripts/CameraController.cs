@@ -28,37 +28,27 @@ public class CameraController : MonoBehaviour
     float avgDegY;
     bool moving = false;
 
-
+    private bool isCursorValid => !EventSystem.current.IsPointerOverGameObject();
 
     // Update is called once per frame
     void Update()
     {
         if (Input.mouseScrollDelta.y != 0) // zoomovani kamery
         {
-            if (EventSystem.current.IsPointerOverGameObject())
-                return;
-            Vector3 zoom = transform.forward * (Input.mouseScrollDelta.y * scrollSpeed);
-            float dist = Vector3.Distance(transform.position + zoom, car.position);
-            if (dist > minZoom && dist < maxZoom)
-                transform.position += zoom;
+            float zoom = Input.mouseScrollDelta.y;
+            if (zoom != 0 && isCursorValid)
+            {
+                ZoomCamera(zoom);
+            }
         }
 
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && isCursorValid)
         {
-            //abych si omylem neposunul kameru kdyz klikam
-            if (EventSystem.current.IsPointerOverGameObject())
-                return;
-
             moving = true;
         }
-        if (Input.GetMouseButton(0) && moving)
+        if (Input.GetMouseButton(0) && moving && isCursorValid)
         {
-            //abych si omylem neposunul kameru kdyz klikam
-            if (EventSystem.current.IsPointerOverGameObject())
-                return;
-
-
             transform.LookAt(car);
 
 
@@ -102,6 +92,15 @@ public class CameraController : MonoBehaviour
             transform.LookAt(car);
         }
     }
+
+    private void ZoomCamera(float zoom)
+    {
+        Vector3 zoomDir = scrollSpeed * zoom * transform.forward;
+        float dist = Vector3.Distance(transform.position + zoomDir, car.position);
+        if (dist > minZoom && dist < maxZoom)
+            transform.position += zoomDir;
+    }
+
 
     /// <summary>
     /// Changes camera position to get the car Spoiler in the frame
